@@ -1,0 +1,94 @@
+= URLDownloader for iOS v1.0
+
+Downloader makes it easy to implement file download functionality.
+
+
+== Usage Example
+
+Let say we have a UIViewController called MyViewController and we would like to 
+use downloader there. 
+
+First add this classes to your xCode project.
+
+Then inside MyViewController.h define a global downloader variable and attach
+downloader delegate protocol.
+
+    ...
+
+    @interface MyViewController : UIViewController <URLDownloaderDelegate>
+    {
+        URLDownloader *downloader;
+    }
+
+    ...
+
+In your MyViewController.m file first import some librarie, setup downloader
+property and syntesize it.
+
+    ...
+
+    #import "URLCredential.h"
+    #import "URLDownloader.h"
+
+    ...
+
+    @interface MyViewController()
+    @property (retain) URLDownloader *downloader;
+    @end
+    
+    ...
+
+    @synthesize downloader;
+    
+    ...
+
+We then initialize downloader variable.
+
+    - (void)dealloc
+    {
+        ...
+        [downloader release];
+        [super dealloc];
+    }
+
+    - (void)viewDidLoad
+    {
+        [super viewDidLoad];
+        self.downloader = [URLDownloader downloaderWithDelegate:self];
+        ...
+    }
+
+And finally we can define methods for starting and stopping download.
+
+    - (void)startDownload
+    {
+        NSString *username = [NSString stringWithString:@"myuser"];
+        NSString *password = [NSString stringWithString:@"mypass"];
+        URLCredential *credential = [URLCredential credentialWithUsername:username andPassword:password];
+
+        NSURL *url = [NSURL URLWithString:@"http://mydomain.com/file.zip"];
+        NSURLRequestCachePolicy policy = NSURLRequestUseProtocolCachePolicy;
+        NSTimeInterval timeout = 60.0;
+        NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:policy timeoutInterval:timeout];
+
+        [self.downloader download:request authenticateWith:credential];
+    }
+
+    - (void)stopDownload
+    {
+        [self.downloader cancel];
+    }
+
+Don't forget to implement method required by the URLDownloaderDelegate protocol.
+
+    # Required
+    - (void)downloader:(URLDownloader *)downloader didFinishWithData:(NSData *)data;
+    - (void)downloader:(URLDownloader *)downloader didFailOnAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge;
+    - (void)downloader:(URLDownloader *)downloader didFailWithError:(NSError *)error;
+    - (void)downloader:(URLDownloader *)downloader didFailWithNotConnectedToInternetError:(NSError *)error;
+
+    #optional
+    - (void)downloaderDidStart:(URLDownloader *)downloader;
+    - (void)downloaderDidCancelDownloading:(URLDownloader *)downloader;
+    - (void)downloader:(URLDownloader *)downloader didReceiveData:(NSData *)data;
+
