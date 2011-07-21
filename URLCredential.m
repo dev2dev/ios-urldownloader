@@ -9,6 +9,10 @@
 #import "URLCredential.h"
 
 
+//
+// IMPLEMENTATION
+//
+
 @implementation URLCredential
 
 
