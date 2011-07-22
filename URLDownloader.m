@@ -145,7 +145,7 @@
 {
     self.urlResponse = response;
 
-    NSLog(@"[URLDownloader] Download started");
+    NSLog(@"[URLDownloader] Downloading ...");
     if ([self.delegate respondsToSelector:@selector(downloaderDidStart:)])
     {
         [self.delegate downloaderDidStart:self];
