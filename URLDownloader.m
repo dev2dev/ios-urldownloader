@@ -58,6 +58,11 @@
     return [downloader autorelease];
 }
 
+- (void)reset
+{
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+}
+
 #pragma mark Actions
 
 - (void)download:(NSURLRequest *)request authenticateWith:(URLCredential *)credential
@@ -67,6 +72,7 @@
 	self.urlData = [[[NSMutableData alloc] initWithData:nil] autorelease];
 	self.urlConnection = [[[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES] autorelease];
     self.urlCredential = credential;
+    self.urlResponse = nil;
 	
 	NSLog(@"[URLDownloader] Download started");
 }
@@ -136,6 +142,8 @@
 	}
 	else
 	{
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+        
 		NSLog(@"[URLDownloader] Authentication failed");
         [self.delegate downloader:self didFailOnAuthenticationChallenge:challenge];
 	}
@@ -165,6 +173,8 @@
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+
 	NSLog(@"[URLDownloader] Error: %@, %d", error, [error code]);
 	switch ([error code])
 	{
@@ -174,12 +184,13 @@
 		default:
             [self.delegate downloader:self didFailWithError:error];;
 			break;
-	}
-    
+	}    
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    
     NSLog(@"[URLDownloader] Download finished");
 
     NSData *data = [NSData dataWithData:self.urlData];
