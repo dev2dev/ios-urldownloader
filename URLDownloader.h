@@ -12,10 +12,6 @@
 @class URLCredential;
 
 
-//
-// INTERFACE INITIALIZATION
-//
-
 @interface URLDownloader : NSObject
 {
     id <URLDownloaderDelegate> delegate;
@@ -25,11 +21,6 @@
 	NSMutableData *urlData;
     URLCredential *urlCredential;
 }
-
-
-//
-// PUBLIC INTERFACE
-//
 
 @property (retain) id <URLDownloaderDelegate> delegate;
 

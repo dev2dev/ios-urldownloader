@@ -9,20 +9,23 @@
 #import "URLCredential.h"
 
 
-//
-// IMPLEMENTATION
-//
+#pragma mark -
 
 @implementation URLCredential
-
-
-#pragma mark -
 
 @synthesize username;
 @synthesize password;
 @synthesize persistance;
 
-#pragma mark - General
+#pragma mark General
+
+- (void)dealloc 
+{
+	[username release];
+	[password release];
+    
+    [super dealloc];
+}
 
 - (id)initWithDefaults
 {
@@ -43,14 +46,6 @@
     credential.password = pass;
 
     return [credential autorelease];
-}
-
-- (void)dealloc 
-{
-	[username release];
-	[password release];
-    
-    [super dealloc];
 }
 
 @end

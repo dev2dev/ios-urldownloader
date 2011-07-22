@@ -10,6 +10,7 @@
 
 @class URLDownloader;
 
+
 @protocol URLDownloaderDelegate <NSObject>
 
 @required

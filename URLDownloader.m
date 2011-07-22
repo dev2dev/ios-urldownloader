@@ -10,9 +10,7 @@
 #import "URLCredential.h"
 
 
-//
-// PRIVATE INTERFACE
-//
+#pragma mark -
 
 @interface URLDownloader()
 
@@ -24,14 +22,9 @@
 @end
 
 
-//
-// IMPLEMENTATION
-//
+#pragma mark -
 
 @implementation URLDownloader
-
-
-#pragma mark -
 
 @synthesize delegate;
 
@@ -40,8 +33,17 @@
 @synthesize urlData;
 @synthesize urlCredential;
 
+#pragma mark General
 
-#pragma mark - General
+- (void)dealloc 
+{
+	[urlConnection release];
+    [urlResponse release];
+	[urlData release];
+    [urlCredential release];
+	
+    [super dealloc];
+}
 
 - (id)init
 {
@@ -56,18 +58,7 @@
     return [downloader autorelease];
 }
 
-- (void)dealloc 
-{
-	[urlConnection release];
-    [urlResponse release];
-	[urlData release];
-    [urlCredential release];
-	
-    [super dealloc];
-}
-
-
-#pragma mark - Actions
+#pragma mark Actions
 
 - (void)download:(NSURLRequest *)request authenticateWith:(URLCredential *)credential
 {
@@ -93,8 +84,7 @@
     }
 }
 
-
-#pragma mark - Information
+#pragma mark Information
 
 - (long)fullContentSize
 {
@@ -128,8 +118,7 @@
     return contentSize > 0.0 ? downloadedSize / contentSize : 0.0;
 }
 
-
-#pragma mark - Connection
+#pragma mark Connection
 
 - (void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
 {
@@ -196,6 +185,5 @@
     NSData *data = [NSData dataWithData:self.urlData];
     [self.delegate downloader:self didFinishWithData:data];
 }
-
 
 @end
