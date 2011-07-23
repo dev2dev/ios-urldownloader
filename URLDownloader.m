@@ -37,6 +37,8 @@
 
 - (void)dealloc 
 {
+	[delegate release];
+    
 	[urlConnection release];
     [urlResponse release];
 	[urlData release];
@@ -84,9 +86,9 @@
 	[urlConnection cancel];
 	
 	NSLog(@"[URLDownloader] Download canceled");
-    if ([self.delegate respondsToSelector:@selector(downloaderDidCancelDownloading:)])
+    if ([self.delegate respondsToSelector:@selector(urlDownloaderDidCancelDownloading:)])
     {
-        [self.delegate downloaderDidCancelDownloading:self];
+        [self.delegate urlDownloaderDidCancelDownloading:self];
     }
 }
 
@@ -145,7 +147,7 @@
         [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         
 		NSLog(@"[URLDownloader] Authentication failed");
-        [self.delegate downloader:self didFailOnAuthenticationChallenge:challenge];
+        [self.delegate urlDownloader:self didFailOnAuthenticationChallenge:challenge];
 	}
 }
 
@@ -154,9 +156,9 @@
     self.urlResponse = response;
 
     NSLog(@"[URLDownloader] Downloading ...");
-    if ([self.delegate respondsToSelector:@selector(downloaderDidStart:)])
+    if ([self.delegate respondsToSelector:@selector(urlDownloaderDidStart:)])
     {
-        [self.delegate downloaderDidStart:self];
+        [self.delegate urlDownloaderDidStart:self];
     }
 }
 
@@ -164,9 +166,9 @@
 {
 	[self.urlData appendData:data];
     
-    if ([self.delegate respondsToSelector:@selector(downloader:didReceiveData:)])
+    if ([self.delegate respondsToSelector:@selector(urlDownloader:didReceiveData:)])
     {
-        [self.delegate downloader:self didReceiveData:data];
+        [self.delegate urlDownloader:self didReceiveData:data];
     }
 
 }
@@ -179,10 +181,10 @@
 	switch ([error code])
 	{
 		case NSURLErrorNotConnectedToInternet:
-			[self.delegate downloader:self didFailWithNotConnectedToInternetError:error];
+			[self.delegate urlDownloader:self didFailWithNotConnectedToInternetError:error];
 			break;
 		default:
-            [self.delegate downloader:self didFailWithError:error];;
+            [self.delegate urlDownloader:self didFailWithError:error];;
 			break;
 	}    
 }
@@ -194,7 +196,7 @@
     NSLog(@"[URLDownloader] Download finished");
 
     NSData *data = [NSData dataWithData:self.urlData];
-    [self.delegate downloader:self didFinishWithData:data];
+    [self.delegate urlDownloader:self didFinishWithData:data];
 }
 
 @end

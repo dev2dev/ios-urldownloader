@@ -14,15 +14,15 @@
 @protocol URLDownloaderDelegate <NSObject>
 
 @required
-- (void)downloader:(URLDownloader *)downloader didFinishWithData:(NSData *)data;
-- (void)downloader:(URLDownloader *)downloader didFailOnAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge;
-- (void)downloader:(URLDownloader *)downloader didFailWithError:(NSError *)error;
-- (void)downloader:(URLDownloader *)downloader didFailWithNotConnectedToInternetError:(NSError *)error;
+- (void)urlDownloader:(URLDownloader *)urlDownloader didFinishWithData:(NSData *)data;
+- (void)urlDownloader:(URLDownloader *)urlDownloader didFailOnAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge;
+- (void)urlDownloader:(URLDownloader *)urlDownloader didFailWithError:(NSError *)error;
+- (void)urlDownloader:(URLDownloader *)urlDownloader didFailWithNotConnectedToInternetError:(NSError *)error;
 
 @optional
-- (void)downloaderDidStart:(URLDownloader *)downloader;
-- (void)downloaderDidCancelDownloading:(URLDownloader *)downloader;
-- (void)downloader:(URLDownloader *)downloader didReceiveData:(NSData *)data;
+- (void)urlDownloaderDidStart:(URLDownloader *)urlDownloader;
+- (void)urlDownloaderDidCancelDownloading:(URLDownloader *)urlDownloader;
+- (void)urlDownloader:(URLDownloader *)urlDownloader didReceiveData:(NSData *)data;
 
 @end
 
