@@ -1,6 +1,10 @@
-= URLDownloader for iOS v1.0
+= URLDownloader for iOS v1.2
 
 Downloader makes it easy to implement file download functionality.
+
+== Instalation
+
+Add files to your xCode project.
 
 
 == Usage Example
@@ -71,7 +75,7 @@ And finally we can define methods for starting and stopping download.
         NSTimeInterval timeout = 60.0;
         NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:policy timeoutInterval:timeout];
 
-        [self.downloader download:request authenticateWith:credential];
+        [self.urlDownloader download:request withCredential:credential];
     }
 
     - (void)stopDownload

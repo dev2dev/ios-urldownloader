@@ -37,6 +37,8 @@
 
 - (void)dealloc 
 {
+    [urlConnection cancel];
+    
 	[delegate release];
     
 	[urlConnection release];
@@ -45,11 +47,6 @@
     [urlCredential release];
 	
     [super dealloc];
-}
-
-- (id)init
-{
-    return [super init];
 }
 
 + (id)downloaderWithDelegate:(id)obj
@@ -67,14 +64,14 @@
 
 #pragma mark Actions
 
-- (void)download:(NSURLRequest *)request authenticateWith:(URLCredential *)credential
+- (void)download:(NSURLRequest *)request withCredential:(URLCredential *)credential
 {
-	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-	
-	self.urlData = [[[NSMutableData alloc] initWithData:nil] autorelease];
-	self.urlConnection = [[[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES] autorelease];
     self.urlCredential = credential;
     self.urlResponse = nil;
+	self.urlData = [[[NSMutableData alloc] initWithData:nil] autorelease];
+	self.urlConnection = [[[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO] autorelease];
+
+    [self.urlConnection start];
 	
 	NSLog(@"[URLDownloader] Download started");
 }
@@ -154,8 +151,9 @@
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
     self.urlResponse = response;
+    [self.urlData setLength:0]; // in case of 302
 
-    NSLog(@"[URLDownloader] Downloading ...");
+    NSLog(@"[URLDownloader] Downloading %@ ...", [[response URL] absoluteString]);
     if ([self.delegate respondsToSelector:@selector(urlDownloaderDidStart:)])
     {
         [self.delegate urlDownloaderDidStart:self];

@@ -25,7 +25,7 @@
 @property (retain) id <URLDownloaderDelegate> delegate;
 
 + (id)downloaderWithDelegate:(id)obj;
-- (void)download:(NSURLRequest *)request authenticateWith:(URLCredential *)credential;
+- (void)download:(NSURLRequest *)request withCredential:(URLCredential *)credential;
 - (void)cancel;
 
 @end
