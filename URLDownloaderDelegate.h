@@ -1,6 +1,6 @@
 //
 //  URLDownloaderDelegate.h
-//  URLDownloader
+//  iOS-URLDownloader
 //
 //  Created by Kristijan Sedlak on 7/21/11.
 //  Copyright 2011 AppStrides. All rights reserved.
