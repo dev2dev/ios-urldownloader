@@ -7,7 +7,6 @@
 //
 
 #import "URLDownloader.h"
-#import "URLCredential.h"
 
 
 #pragma mark -

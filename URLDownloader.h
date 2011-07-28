@@ -7,10 +7,30 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "URLDownloaderDelegate.h"
+#import "URLCredential.h"
 
-@class URLCredential;
+@class URLDownloader;
 
+
+#pragma mark -
+
+@protocol URLDownloaderDelegate <NSObject>
+
+@required
+- (void)urlDownloader:(URLDownloader *)urlDownloader didFinishWithData:(NSData *)data;
+- (void)urlDownloader:(URLDownloader *)urlDownloader didFailOnAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge;
+- (void)urlDownloader:(URLDownloader *)urlDownloader didFailWithError:(NSError *)error;
+- (void)urlDownloader:(URLDownloader *)urlDownloader didFailWithNotConnectedToInternetError:(NSError *)error;
+
+@optional
+- (void)urlDownloaderDidStart:(URLDownloader *)urlDownloader;
+- (void)urlDownloaderDidCancelDownloading:(URLDownloader *)urlDownloader;
+- (void)urlDownloader:(URLDownloader *)urlDownloader didReceiveData:(NSData *)data;
+
+@end
+
+
+#pragma mark -
 
 @interface URLDownloader : NSObject
 {
