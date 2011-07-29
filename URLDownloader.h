@@ -42,7 +42,7 @@
     URLCredential *urlCredential;
 }
 
-@property (retain) id <URLDownloaderDelegate> delegate;
+@property(retain) id <URLDownloaderDelegate> delegate;
 
 + (id)downloaderWithDelegate:(id)obj;
 - (void)download:(NSURLRequest *)request withCredential:(URLCredential *)credential;

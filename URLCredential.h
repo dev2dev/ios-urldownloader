@@ -16,9 +16,9 @@
     NSURLCredentialPersistence persistance;
 }
 
-@property (retain) NSString *username;
-@property (retain) NSString *password;
-@property (assign) NSURLCredentialPersistence persistance;
+@property(retain) NSString *username;
+@property(retain) NSString *password;
+@property(assign) NSURLCredentialPersistence persistance;
 
 + (id)credentialWithUsername:(NSString *)user andPassword:(NSString *)pass;
 - (id)initWithDefaults;

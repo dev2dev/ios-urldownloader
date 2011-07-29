@@ -13,10 +13,10 @@
 
 @interface URLDownloader()
 
-@property (retain) NSURLConnection *urlConnection;
-@property (retain) NSURLResponse *urlResponse;
-@property (retain) NSMutableData *urlData;
-@property (retain) URLCredential *urlCredential;
+@property(retain) NSURLConnection *urlConnection;
+@property(retain) NSURLResponse *urlResponse;
+@property(retain) NSMutableData *urlData;
+@property(retain) URLCredential *urlCredential;
 
 @end
 
