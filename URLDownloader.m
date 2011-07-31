@@ -26,11 +26,26 @@
 @implementation URLDownloader
 
 @synthesize delegate;
+@synthesize state;
 
 @synthesize urlConnection;
 @synthesize urlResponse;
 @synthesize urlData;
 @synthesize urlCredential;
+
+#pragma mark Setters
+
+- (void)setState:(URLDownloaderState)downloaderState
+{
+    if (downloaderState != state) 
+    {
+        state = downloaderState;
+        if ([self.delegate respondsToSelector:@selector(urlDownloader:didChangeStateTo:)])
+        {
+            [self.delegate urlDownloader:self didChangeStateTo:downloaderState];
+        }
+    }
+}
 
 #pragma mark General
 
@@ -48,12 +63,19 @@
     [super dealloc];
 }
 
+- (id)initWithDelegate:(id)obj
+{
+	if(self == [self init])
+	{
+		self.delegate = obj;
+        [self setState:URLDownloaderStateInactive];
+	}
+	return self;
+}
+
 + (id)downloaderWithDelegate:(id)obj
 {
-    URLDownloader *downloader = [[URLDownloader alloc] init];
-    downloader.delegate = obj;
-    
-    return [downloader autorelease];
+    return [[[URLDownloader alloc] initWithDelegate:obj] autorelease];
 }
 
 - (void)reset
@@ -65,6 +87,8 @@
 
 - (void)download:(NSURLRequest *)request withCredential:(URLCredential *)credential
 {
+    [self setState:URLDownloaderStateConnecting];
+    
     self.urlCredential = credential;
     self.urlResponse = nil;
 	self.urlData = [[[NSMutableData alloc] initWithData:nil] autorelease];
@@ -90,35 +114,35 @@
 
 #pragma mark Information
 
-- (long)fullContentSize
+- (int)fullContentSize
 {
     @try 
     {
-        return [self.urlResponse expectedContentLength];
+        return [[NSNumber numberWithLongLong:[urlResponse expectedContentLength]] intValue]; 
     }
     @catch (NSException * e) 
     {
-        return 0.0;
+        return 0;
     }
 }
 
-- (long)downloadedContentSize
+- (int)downloadedContentSize
 {
     @try 
     {
-        return (long)[self.urlData length];
+        return [[NSNumber numberWithInteger:[self.urlData length]] intValue];
     }
     @catch (NSException * e) 
     {
-        return 0.0;
+        return 0;
     }
 }
 
 - (float)downloadCompleteProcent
 {
-    float contentSize = (float)[self fullContentSize];
-    float downloadedSize = (float)[self downloadedContentSize];
-    
+    float contentSize = [self fullContentSize];
+    float downloadedSize = [self downloadedContentSize];
+
     return contentSize > 0.0 ? downloadedSize / contentSize : 0.0;
 }
 
@@ -126,6 +150,8 @@
 
 - (void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
 {
+    [self setState:URLDownloaderStateAuthenticating];
+    
 	if ([challenge previousFailureCount] == 0)
 	{
 		NSLog(@"[URLDownloader] Authentication challenge received");
@@ -133,7 +159,6 @@
 		NSURLCredential *credential = [NSURLCredential credentialWithUser:self.urlCredential.username
 																 password:self.urlCredential.password
 															  persistence:self.urlCredential.persistance];
-        
 		[[challenge sender] useCredential:credential forAuthenticationChallenge:challenge];
 
 		NSLog(@"[URLDownloader] Credentials sent");
@@ -152,6 +177,7 @@
     self.urlResponse = response;
     [self.urlData setLength:0]; // in case of 302
 
+    [self setState:URLDownloaderStateDownloading];
     NSLog(@"[URLDownloader] Downloading %@ ...", [[response URL] absoluteString]);
     if ([self.delegate respondsToSelector:@selector(urlDownloaderDidStart:)])
     {
@@ -172,6 +198,8 @@
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
+    [self setState:URLDownloaderStateInactive];
+    
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 
 	NSLog(@"[URLDownloader] Error: %@, %d", error, [error code]);
@@ -189,11 +217,13 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-    
+
     NSLog(@"[URLDownloader] Download finished");
 
     NSData *data = [NSData dataWithData:self.urlData];
     [self.delegate urlDownloader:self didFinishWithData:data];
+
+    [self setState:URLDownloaderStateFinished];
 }
 
 @end

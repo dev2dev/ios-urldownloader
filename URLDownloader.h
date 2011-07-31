@@ -14,6 +14,20 @@
 
 #pragma mark -
 
+typedef enum
+{
+	URLDownloaderStateInactive = 0,
+	URLDownloaderStateConnecting = 1,
+	URLDownloaderStateAuthenticating = 2,
+	URLDownloaderStateStarted = 3,
+	URLDownloaderStateDownloading = 4,
+	URLDownloaderStateFinished = 5
+} 
+URLDownloaderState;
+
+
+#pragma mark -
+
 @protocol URLDownloaderDelegate <NSObject>
 
 @required
@@ -26,6 +40,7 @@
 - (void)urlDownloaderDidStart:(URLDownloader *)urlDownloader;
 - (void)urlDownloaderDidCancelDownloading:(URLDownloader *)urlDownloader;
 - (void)urlDownloader:(URLDownloader *)urlDownloader didReceiveData:(NSData *)data;
+- (void)urlDownloader:(URLDownloader *)urlDownloader didChangeStateTo:(URLDownloaderState)state;
 
 @end
 
@@ -40,12 +55,18 @@
     NSURLResponse *urlResponse;
 	NSMutableData *urlData;
     URLCredential *urlCredential;
+    URLDownloaderState state;
 }
 
 @property(retain) id <URLDownloaderDelegate> delegate;
+@property(nonatomic, readonly) URLDownloaderState state;
 
 + (id)downloaderWithDelegate:(id)obj;
+- (id)initWithDelegate:(id)obj;
 - (void)download:(NSURLRequest *)request withCredential:(URLCredential *)credential;
 - (void)cancel;
+- (int)fullContentSize;
+- (int)downloadedContentSize;
+- (float)downloadCompleteProcent;
 
 @end
