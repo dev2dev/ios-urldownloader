@@ -110,6 +110,8 @@
     {
         [self.delegate urlDownloaderDidCancelDownloading:self];
     }
+    
+    [self setState:URLDownloaderStateCanceled];
 }
 
 #pragma mark Information

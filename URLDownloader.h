@@ -21,7 +21,8 @@ typedef enum
 	URLDownloaderStateAuthenticating = 2,
 	URLDownloaderStateStarted = 3,
 	URLDownloaderStateDownloading = 4,
-	URLDownloaderStateFinished = 5
+	URLDownloaderStateFinished = 5,
+	URLDownloaderStateCanceled = 6
 } 
 URLDownloaderState;
 
